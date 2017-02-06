@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" class="sb-init"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Astarta portal</title>
+
+    <!-- <meta name="description" content=""> -->
+    <meta name="_csrf" content="">
+
+    <!-- CSS -->
+    <!--<link href="/astarta-portal/resources/css/bootstrap/bootstrap.min.css" rel="stylesheet">-->
+    <link href="/astarta-portal/resources/css/app/cssfamily.css" rel="stylesheet">
+    <link href="/astarta-portal/resources/css/app/preload.css" rel="stylesheet">
+    <link href="/astarta-portal/resources/css/app/vendors.css" rel="stylesheet">
+    <link href="/astarta-portal/resources/css/app/syntaxhighlighter/shCore.css" rel="stylesheet">
+    <link href="/astarta-portal/resources/css/app/style-blue2.css" rel="stylesheet" title="default">
+    <link href="/astarta-portal/resources/css/app/width-full.css" rel="stylesheet" title="default">
+    <link href="/astarta-portal/resources/css/app/app.css" rel="stylesheet">
+    <link href="/astarta-portal/resources/css/app/select2.min.css" rel="stylesheet">
+<!--     <script src="/astarta-portal/resources/js/csrf.js"></script> -->   
+	<script>function fillCsrfHiddenField(){
+				let csrfToken = $.cookie("XSRF-TOKEN");
+				if(csrfToken!==undefined)
+				$("meta[name='_csrf']").attr('content', csrfToken);}
+	</script>
+</head>
+
+<!-- Preloader -->
+<body style="overflow: visible;"><div style="position:fixed;top:0px;left:0px;width:0;height:0;" id="scrollzipPoint"></div><div id="preloader" style="display: none;">
+    <div id="status" style="display: none;">&nbsp;</div>
+</div>
+
+<div class="sb-site-container">
+    <div class="boxed">
+        <div id="portalHeader">
+        </div>
+
+        <div id="portalWorkspace">
+        </div>
+
+        <div id="portalFooter">
+        </div>
+    </div> <!-- boxed -->
+</div> <!-- sb-site -->
+
+<div class="sb-slidebar sb-right sb-style-overlay" style="margin-right: -253px;">
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search...">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+        </span>
+    </div><!-- /input-group -->
+
+    <h2 class="slidebar-header no-margin-bottom">Navigation</h2>
+    <ul class="slidebar-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="portfolio_topbar.html">Portfolio</a></li>
+        <li><a href="page_about3.html">About us</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="page_contact.html">Contact</a></li>
+    </ul>
+
+    <h2 class="slidebar-header">Social Media</h2>
+</div>
+<div id="back-top" style="display: block;">
+    <a href="#header"><i class="fa fa-chevron-up"></i></a>
+</div>
+
+<script src="/astarta-portal/resources/js/vendors.js"></script>
+<script src="/astarta-portal/resources/js/styleswitcher.js"></script>
+<script src="/astarta-portal/resources/js/select2.min.js"></script>
+
+<!-- Syntaxhighlighter -->
+<script src="/astarta-portal/resources/js/syntaxhighlighter/shCore.js"></script>
+<script src="/astarta-portal/resources/js/syntaxhighlighter/shBrushXml.js"></script>
+<script src="/astarta-portal/resources/js/syntaxhighlighter/shBrushJScript.js"></script>
+<script src="/astarta-portal/resources/js/DropdownHover.js"></script>
+<script src="/astarta-portal/resources/js/holder.js"></script>
+<script src="/astarta-portal/resources/js/home_info.js"></script>
+<script src="/astarta-portal/resources/js/templates.js"></script>
+<script src="/astarta-portal/resources/js/index.js"></script>
+<script src="/astarta-portal/resources/js/payslip.js"></script>
+<script src="/astarta-portal/resources/js/app.js"></script> 
+
+</body></html>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<!-- <debug /> -->
+
+	<context:property-placeholder location="classpath:app-settings.properties" />
+	<context:component-scan base-package="astarta.*" />
+
+	<http entry-point-ref="authEntryPoint">
+
+		<intercept-url pattern="/**" requires-channel="https" />
+		<port-mappings>
+			<port-mapping http="8080" https="8443" />
+		</port-mappings>
+
+		<access-denied-handler error-page="/html/error/denied.html" />
+
+		<intercept-url pattern="/html/index.html" access="permitAll" />
+		<intercept-url pattern="/html/secure/**" access="hasRole('ROLE_EMPLOYEE')" />
+		
+ 		<form-login login-processing-url="/appLogin"
+			authentication-success-handler-ref="authSuccessHandler"
+       		authentication-failure-handler-ref="authFailureHandler"
+			username-parameter="app_username"
+			password-parameter="app_password" />
+			
+
+		<logout logout-url="/logout" logout-success-url="/html/index.html"
+			delete-cookies="JSESSIONID" invalidate-session="true" />
+
+		<remember-me key="remember_me" remember-me-parameter="_spring_security_remember_me"
+			token-validity-seconds="60" token-repository-ref="rememberMeTokenRepository"
+			user-service-ref="userDetailsServiceList" />
+
+		<!-- <session-management session-fixation-protection="migrateSession"> 
+			<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" expired-url="/html/expired.html"/> 
+			</session-management> -->
+
+		<csrf token-repository-ref="csrfTokenRepository" disabled="false" request-matcher-ref="csrfSecurityRequestMatcher" /> 
+	</http>
+	
+	<!--//////////////////// FORM-LOGIN /////////////////-->
+	<beans:bean id="authSuccessHandler" class="astarta.security.config.AuthSuccessHandler">
+	</beans:bean>
+   	<beans:bean id="authFailureHandler" class="astarta.security.config.AuthFailHandler">
+   	</beans:bean>
+
+	<!--//////////////////// REMEMBER ME /////////////////-->
+	<beans:bean id="rememberMeTokenRepository"
+		class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
+		<beans:property name="createTableOnStartup" value="false" />
+		<beans:property name="dataSource" ref="portalDataSource" />
+	</beans:bean>
+	
+	<beans:bean id="userDetailsServiceList"
+		class="astarta.security.config.UserDetailsServiceList">
+		<beans:constructor-arg index="0"
+			type="java.util.ArrayList">
+			<beans:list>
+				<beans:ref bean="jdbcDaoImplLdapPopulator" />
+				<beans:ref bean="ldapUserService" />
+			</beans:list>
+		</beans:constructor-arg>
+	</beans:bean>	
+
+	<!--/////////////////// CSRF //////////////////////-->
+	<beans:bean id="csrfTokenRepository"
+		class="org.springframework.security.web.csrf.CookieCsrfTokenRepository">
+		<beans:property name="cookieHttpOnly" value="false" />
+	</beans:bean>
+	<beans:bean id="csrfSecurityRequestMatcher" class="astarta.security.config.CsrfSecurityRequestMatcher"/>
+	<beans:bean id="jdbcDaoImplLdapPopulator"
+		class="astarta.security.config.JdbcDaoImplLdapPopulator">
+		<beans:property name="enableAuthorities" value="false" />
+		<beans:property name="enableGroups" value="true" />
+		<beans:property name="dataSource" ref="portalDataSource" />
+	</beans:bean>	
+
+	<!--//////////////////// LDAP-AD //////////////////-->
+	<ldap-server id="contextSource" url="ldap://*******************:389/"
+		manager-dn="CN=LDAPObserver,CN=Users,DC=astarta,DC=UA"
+		manager-password="****************" />
+	<beans:bean id="userSearch"
+		class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+		<beans:constructor-arg index="0" value="DC=astarta,DC=ua" />
+		<beans:constructor-arg index="1"
+			value="(sAMAccountName={0})" />
+		<beans:constructor-arg index="2" ref="contextSource" />
+		<beans:property name="searchSubtree" value="true" />
+	</beans:bean>
+	<beans:bean id="ldapAuthProvider"
+		class="astarta.security.config.LdapAuthenticationProviderExt">
+		<beans:constructor-arg>
+			<beans:bean id="bindAuthenticator"
+				class="org.springframework.security.ldap.authentication.BindAuthenticator">
+				<beans:constructor-arg ref="contextSource" />
+				<beans:property name="userSearch" ref="userSearch" />
+			</beans:bean>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="jdbcDaoImplLdapPopulator" />
+	</beans:bean>
+	<beans:bean id="ldapUserService"
+		class="astarta.security.config.LdapUserDetailsServiceExt">
+		<beans:constructor-arg name="userSearch" ref="userSearch" />
+		<beans:constructor-arg name="authoritiesPopulator"
+			ref="jdbcDaoImplLdapPopulator" />
+	</beans:bean>
+	<authentication-manager erase-credentials="true">
+		<authentication-provider user-service-ref="jdbcDaoImplLdapPopulator" />
+		<authentication-provider ref="ldapAuthProvider" />
+	</authentication-manager>
+</beans:beans>
+

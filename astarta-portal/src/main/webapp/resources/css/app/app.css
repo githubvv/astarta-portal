@@ -1,0 +1,45 @@
+.category{
+    height: 140px;
+    padding: 12px;
+}
+
+.category-label{
+    color: #666;
+}
+
+.report{
+    height: 0px;
+    padding: 0px;
+    margin-bottom:5px; 
+}
+
+.report.text-icon{
+	margin:0px;
+}
+
+.report-label{
+    color: #666;
+}
+
+.btn-category{
+    text-align: left;
+}
+
+.category:hover {
+    background-color: rgba(93, 134, 169, 0.06);
+}
+
+#sel-payslip-cal{
+    width: 15%;
+}
+#sel-payslip-comp{
+    width: 25%;
+}
+
+#report-workspace{
+	margin-top: 15px;
+}
+
+.h5-error-data{
+	color:#800000;
+}

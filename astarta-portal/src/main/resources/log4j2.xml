@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="astarta-portal"
+	packages="">
+	<Appenders>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%m%n" />
+		</Console>
+		<RollingFile name="SysLog" immediateFlush="true"
+			fileName="${sys:catalina.home}/logs/portal_sys.log"
+			filePattern="${sys:catalina.home}/logs/$${date:yyyy-MM}/portal-sys-%d{yyyy-MM-dd-HH}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d{ISO8601} [%30c] - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="24"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="60" />
+		</RollingFile>
+		<RollingFile name="ReportLog" immediateFlush="true"
+			fileName="${sys:catalina.home}/logs/portal_report.log"
+			filePattern="${sys:catalina.home}/logs/$${date:yyyy-MM}/portal-report-%d{yyyy-MM-dd-HH}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d{ISO8601} [%30c] - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="24"
+					modulate="true" />
+				<!-- <SizeBasedTriggeringPolicy size="20 MB" /> -->
+			</Policies>
+			<DefaultRolloverStrategy max="60" />
+		</RollingFile>
+		<RollingFile name="OrgStructureLog" immediateFlush="true"
+			fileName="${sys:catalina.home}/logs/portal_orgstructure.log"
+			filePattern="${sys:catalina.home}/logs/$${date:yyyy-MM}/portal-orgstructure-%d{yyyy-MM-dd-HH}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d{ISO8601} [%30c] - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="24"
+					modulate="true" />
+				<!-- <SizeBasedTriggeringPolicy size="20 MB" /> -->
+			</Policies>
+			<DefaultRolloverStrategy max="60" />
+		</RollingFile>
+	</Appenders>
+	<Loggers>
+		<AsyncLogger name="astarta.web.controller.ReportExceptionHandler"
+			level="info" includeLocation="true">
+			<AppenderRef ref="ReportLog" />
+		</AsyncLogger>
+		<AsyncLogger name="astarta.web.controller.OrgStrExceptionHandler"
+			level="info" includeLocation="true">
+			<AppenderRef ref="OrgStructureLog" />
+		</AsyncLogger>
+
+		<!-- <Root level="debug"> <AppenderRef ref="STDOUT" /> <AppenderRef ref="SysLog" 
+			/> </Root> -->
+		<AsyncRoot level="debug">
+			<AppenderRef ref="STDOUT" />
+			<AppenderRef ref="SysLog" />
+		</AsyncRoot>
+
+	</Loggers>
+</Configuration>

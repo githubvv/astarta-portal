@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="astarta.*" />
+	
+	<!-- BoneCP configuration -->
+	<bean id="portalDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="org.postgresql.Driver" />
+		<property name="jdbcUrl" value="jdbc:postgresql://****************:5432/portal" />
+		<property name="username" value="***********" />
+		<property name="password" value="***********" />
+		<property name="idleConnectionTestPeriodInMinutes" value="60" />
+		<property name="idleMaxAgeInMinutes" value="240" />
+		<property name="maxConnectionsPerPartition" value="30" />
+		<property name="minConnectionsPerPartition" value="10" />
+		<property name="partitionCount" value="3" />
+		<property name="acquireIncrement" value="5" />
+		<property name="statementsCacheSize" value="100" />
+		<property name="releaseHelperThreads" value="3" />
+	</bean>
+
+	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
+		id="transactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="portalDataSource" />
+		<property name="packagesToScan" value="astarta.db.entity" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="generateDdl" value="false" />
+				<!-- <property name="showSql" value="true" /> -->
+				<property name="databasePlatform" value="org.hibernate.dialect.PostgreSQL95Dialect" />
+				<!-- <property name="databasePlatform" value="astarta.config.db.JsonPostgreSQLDialect" /> -->
+				<property name="database" value="POSTGRESQL" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+			<value>
+				hibernate.cache.use_second_level_cache = true
+				hibernate.cache.region.factory_class = org.hibernate.cache.ehcache.EhCacheRegionFactory
+				hibernate.cache.use_query_cache = true
+				hibernate.generate_statistics = true
+				hibernate.order_inserts=true 
+				hibernate.order_updates=true
+				hibernate.jdbc.batch_size=20
+				hibernate.show_sql=true,
+				hibernate.enable_lazy_load_no_transe=true
+			</value>
+		</property>
+	</bean>
+
+	<bean id="persistenceExceptionTranslationPostProcessor"
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<bean id="localeResolverMvc"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="uk"/>
+	</bean>
+
+	<bean id="messageSourceMvc"
+		class="astarta.web.config.bundle.ExposedResourceMessageBundleSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:locale/server</value>
+				<value>classpath:locale/client</value>
+			</list>
+		</property>
+		 <property name="defaultEncoding" value="UTF-8"/>
+	</bean>
+	
+	<bean id="orgStructureDao" class="astarta.db.dao.OrgStructureDaoImpl" />
+	<bean id="permissionDao" class="astarta.db.dao.PermissionDaoImpl"/>
+	<bean id="paySlipDao" class="astarta.db.dao.PaySlipDaoImpl" />
+	<bean id="paySlipService" class="astarta.business.service.PaySlipServiceImpl" />
+	<bean id="permissionService" class="astarta.business.service.PermissionServiceImpl"/>
+	<bean id="orgStructureService" class="astarta.business.service.OrgStructureServiceImpl" />
+	<bean id="jacksonMapper" class="astarta.web.config.jackson.JsonMapper" />
+</beans>
+
+
+
