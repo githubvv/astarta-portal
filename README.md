@@ -26,4 +26,4 @@ DATA BASE: POSTGRESQL;
 DESCRIPTION PROJECT. The implementation of the salary unit in the framework of the project a enterprise portal. Salary unit includes a 
 notification in an organization on the payroll as a payslip with all accruals, deductions and payments. The salary is loaded from 
 the 1C-Enterprice database and stored in the intermediate-based enterprise portal. 
-https://youtu.be/IqJtMqogDr8
+https://youtu.be/u5m95J5Ftxo
